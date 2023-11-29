@@ -3,11 +3,29 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import todoReducer from './todoReducer';
+import { configureStore } from '@reduxjs/toolkit';
+import { loadState, saveState } from './localStorage';
+
+const persistedState = loadState();
+
+const store = configureStore({
+  reducer: todoReducer,
+  preloadedState: persistedState,
+  devTools: true,
+});
+
+store.subscribe(() => {
+  saveState(store.getState())
+})
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Provider store={store}>
     <App />
+    </Provider>
   </React.StrictMode>
 );
 
